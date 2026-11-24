@@ -1,0 +1,61 @@
+classdef CommonConst
+
+    properties (Constant)
+        rho0 = 1.225;   
+        c0   = 343;
+        nu   = 1.5*10^-5;
+
+
+        Omega   = 2.618;
+        B       = 3;
+        alpha = 4*pi/9;
+
+        r0      = 1.0;
+        r_blade = 29.0;
+        rbar    = 0.75*CommonConst.r_blade;
+        deltar  = CommonConst.rbar/3;
+
+        b       = 1.0;
+
+
+        UX = 0.75*CommonConst.Omega*CommonConst.r_blade;
+        Uc = 0.8*CommonConst.UX; 
+        
+        MX = CommonConst.UX/CommonConst.c0;
+        Mc = 0.8*CommonConst.MX;
+        
+        Cf = 0.0025;
+
+        
+        kr = 0.0;
+
+        delta      = 0.04;
+        delta_star = 0.005;
+
+
+        xi2 = 1.6;
+        
+
+        betaX  = sqrt(1 - CommonConst.MX^2);
+        
+        
+
+       
+        azi_mode = [-50:50];
+        
+    end
+
+    methods(Static)
+        function k0 = get_k0(w)
+            k0 = w / CommonConst.c0;
+        end
+        
+        function mua = get_mua(SWWN)
+            mua = (SWWN * CommonConst.Mc * CommonConst.b) / (CommonConst.betaX)^2;
+        end
+
+        function muainf = get_muainf(SWWN)
+            muainf = sqrt((CommonConst.get_mua(SWWN))^2 - ((CommonConst.kr * CommonConst.b) / CommonConst.betaX)^2);
+        end
+    end
+end
