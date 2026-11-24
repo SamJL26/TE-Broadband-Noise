@@ -16,7 +16,6 @@ spp_result = zeros(length(theta),length(w));
 
 tiledlayout(1,length(w));
 
-p = polaraxes;
 
 for a = 1:length(w)
 
@@ -31,7 +30,7 @@ for a = 1:length(w)
 
             KXl = wl/CommonConst.Uc;
 
-            spp_summation = spp_summation + ( (Dl.get(theta(i), alpha, w(a), CommonConst.azi_mode)) * (Sqq.get(KXl)) * (abs(double(Lte.get(theta(i), alpha, w(a),  CommonConst.azi_mode, KXl)))^2));
+            spp_summation = spp_summation + ( (Dl.get(theta(i), w(a))) * (Sqq.get(KXl)) * (abs(double(Lte.get(theta(i), w(a), KXl)))^2));
 
        
 

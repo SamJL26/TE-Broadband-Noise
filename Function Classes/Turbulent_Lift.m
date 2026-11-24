@@ -4,9 +4,9 @@ classdef Turbulent_Lift
            
         end
 
-        function result = get(obj, theta, alpha, w, azi_mode, SWWN)
+        function result = get(obj, theta, w, SWWN)
             
-            kappa_l = (azi_mode /CommonConst.rbar) * sin(alpha) - CommonConst.get_k0(w) * cos(alpha) * cos(theta);
+            kappa_l = (CommonConst.azi_mode /CommonConst.rbar) * sin(CommonConst.alpha) - CommonConst.get_k0(w) * cos(CommonConst.alpha) * cos(theta);
             tA = obj.thetaA(SWWN);
             tB = obj.thetaB(kappa_l, SWWN);
             tB_abs = obj.thetaB_abs(kappa_l,SWWN);
