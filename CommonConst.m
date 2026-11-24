@@ -41,7 +41,7 @@ classdef CommonConst
         
 
        
-        azi_mode = [-50:50];
+        azi_mode = [-5000:5000];
         
     end
 
@@ -55,7 +55,7 @@ classdef CommonConst
         end
 
         function muainf = get_muainf(SWWN)
-            muainf = sqrt((CommonConst.get_mua(SWWN))^2 - ((CommonConst.kr * CommonConst.b) / CommonConst.betaX)^2);
+            muainf = sqrt((CommonConst.get_mua(SWWN)).^2 - ((CommonConst.kr * CommonConst.b) / CommonConst.betaX)^2);
         end
     end
 end

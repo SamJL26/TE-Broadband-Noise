@@ -6,12 +6,12 @@ classdef Turbulent_Lift
 
         function result = get(obj, theta, w, SWWN)
             
-            kappa_l = (CommonConst.azi_mode /CommonConst.rbar) * sin(CommonConst.alpha) - CommonConst.get_k0(w) * cos(CommonConst.alpha) * cos(theta);
+            kappa_l = (CommonConst.azi_mode ./ CommonConst.rbar) * sin(CommonConst.alpha) - CommonConst.get_k0(w) * cos(CommonConst.alpha) * cos(theta);
             tA = obj.thetaA(SWWN);
             tB = obj.thetaB(kappa_l, SWWN);
             tB_abs = obj.thetaB_abs(kappa_l,SWWN);
 
-            result = (exp(2.*1i.*tB_abs) ./ (1i.*tB)) .* ( exp(-2.*1i.*tB) .* sqrt(tA./(tA-tB)) .* erf(sym(sqrt(2.*1i.*(tA-tB)))) - erf(sym(sqrt(2.*1i.*tA))) + 1 );
+            result = (exp(2.*1i.*tB) ./ (1i.*tB_abs)) .* ( exp(-2.*1i.*tB) .* sqrt(tA./(tA-tB)) .* erfz(sqrt(2.*1i.*(tA-tB))) - erfz(sqrt(2.*1i.*tA)) + 1) ;
         end
 
         function thetaA = thetaA(~, SWWN)
@@ -26,4 +26,6 @@ classdef Turbulent_Lift
             thetaB_abs = CommonConst.b * (abs(SWWN) + abs(kappa));
         end
     end
+
+    
 end

@@ -4,8 +4,8 @@ addpath("Flat Plat Models\");
 addpath("Function Classes\")
 
 
-w     = [10*(2*pi)];%,100*(2*pi),10000*(2*pi)];
-theta = linspace(0, pi, 50);
+w     = [10000*(2*pi)];%,100*(2*pi),10000*(2*pi)];
+theta = linspace(0, pi, 30);
 
 
 Sqq = Source_Term_Sqq();
@@ -14,30 +14,30 @@ Lte = Turbulent_Lift();
 
 spp_result = zeros(length(theta),length(w));
 
-tiledlayout(1,length(w));
+for i = 1:length(theta)
+        tic
+        wl  = w + (CommonConst.azi_mode .* CommonConst.Omega);
 
 
-for a = 1:length(w)
+        KXl = wl/CommonConst.Uc;
 
-    for i = 1:length(theta)
 
-        spp_summation = 0;
+        A = Dl.get(theta(i), w);
+        
+        B = Sqq.get(KXl);
 
+        C = (abs(Lte.get(theta(i), w, KXl))).^2;
+
+
+        product = A .* B(:) .* C(:);
+        spp_summation = sum(product);
         
 
-            wl  = w(a) + (CommonConst.azi_mode * CommonConst.Omega);
-
-
-            KXl = wl/CommonConst.Uc;
-
-            spp_summation = spp_summation + ( (Dl.get(theta(i), w(a))) * (Sqq.get(KXl)) * (abs(double(Lte.get(theta(i), w(a), KXl)))^2));
-
-       
-
-        spp_result(i,a) = (CommonConst.B / (2*pi)) * ((CommonConst.get_k0(w(a)) * CommonConst.b) / (CommonConst.r0))^2 * CommonConst.deltar * spp_summation;
-
-    end
-
-    nexttile
-    polarplot(theta,10*log10(2*(4*pi)*spp_result(:,a))+94);
+        spp_result(i) = (CommonConst.B / (2*pi)) * ((CommonConst.get_k0(w) * CommonConst.b) / (CommonConst.r0))^2 * CommonConst.deltar * spp_summation;
+        toc
 end
+
+
+polarplot(theta,10*log10(2*(4*pi)*spp_result(:))+94);
+
+
