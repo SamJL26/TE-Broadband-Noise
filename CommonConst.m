@@ -29,8 +29,8 @@ classdef CommonConst
         
         kr = 0.0;
 
-        delta      = 0.04;
-        delta_star = 0.005;
+        delta      = 0.045;
+        delta_star = 0.006;
 
 
         xi2 = 1.6;
