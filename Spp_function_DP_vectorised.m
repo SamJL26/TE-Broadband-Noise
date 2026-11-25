@@ -3,8 +3,8 @@ clear clc
 addpath("Flat Plat Models\"); 
 addpath("Function Classes\")
 
-w     = 100*(2*pi);
-theta = linspace(0, pi, 50);
+w     = 10*(2*pi);
+theta = linspace(0, pi, 100);
 
 Sqq = Source_Term_Sqq();
 Dl  = Polar_Directivity();
@@ -15,12 +15,9 @@ wl  = w + l*CommonConst.Omega;
 KXl = wl/CommonConst.Uc;
 k0  = CommonConst.get_k0(w);
 
-tic
 
 S = Sqq.get(KXl);                         
 D = Dl.get_all(theta, w, l);  
-
-fprintf('D and S: %.1f s\n', toc);
 
 spp_result = zeros(length(theta),1);
 
@@ -31,4 +28,3 @@ for i = 1:length(theta)
 end
 
 polarplot(theta, 10*log10(2*(4*pi)*spp_result) + 94);
-thetalim([0 180]);
