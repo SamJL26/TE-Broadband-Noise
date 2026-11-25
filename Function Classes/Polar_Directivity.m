@@ -5,10 +5,6 @@ classdef Polar_Directivity
         end
 
         function D = get_all(obj, theta, w, l)
-            % theta : vector of observer angles [rad]
-            % w     : observer frequency [rad/s] (scalar)
-            % l     : azimuthal modes (vector, e.g. CommonConst.azi_mode)
-            % D     : Nl x Nt matrix, D(m,c) = D_l(m)(theta(c))
 
             alpha = CommonConst.alpha;
             k0    = CommonConst.get_k0(w);
@@ -18,45 +14,46 @@ classdef Polar_Directivity
 
             theta = theta(:).';
             l     = l(:);
-            la    = abs(l);
+            l_abs = abs(l);
 
-            % theta and pi-theta share sin(theta), so they share the Bessel work
-            thm = min(theta, pi - theta);
+            thm         = min(theta, pi - theta);
             [ut, ~, ic] = uniquetol(thm, 1e-12);
-            ic = ic(:).';
+            ic          = ic(:).';
 
             D = zeros(numel(l), numel(theta));
 
             for j = 1:numel(ut)
-                s    = sin(ut(j));                          % scalar
+                s    = sin(ut(j));                          
                 xm   = k0*rmax*s;
                 lcut = ceil(xm + 10*xm^(1/3) + 10);         % modes beyond this are negligible
-                if lcut > max(la)
+               
+                if lcut > max(l_abs)
                     warning('azi_mode too small at %.1f deg: need |l| up to %d', ...
                             rad2deg(ut(j)), lcut);
                 end
-                idx = find(la <= lcut);
-                lj  = unique(la(idx));                      % distinct |l| >= 0
+
+                idx = find(l_abs <= lcut);
+                lj  = unique(l_abs(idx));                      
 
                 % Gauss-Legendre nodes over the strip
-                N       = ceil(2.2*k0*dr*s/pi) + 20;        % scalar
+                N       = ceil(2.2*k0*dr*s/pi) + 20;        
                 [x, wq] = Polar_Directivity.gauss_legendre(N);
-                r  = 0.5*(rmax - rmin)*x + 0.5*(rmax + rmin);   % N x 1
-                wq = 0.5*(rmax - rmin)*wq;                      % N x 1
+                
+                r  = 0.5*(rmax - rmin)*x + 0.5*(rmax + rmin);   
+                wq = 0.5*(rmax - rmin)*wq;                     
 
-                % One Bessel matrix per unique angle: numel(lj) x N
+                
                 [LL, XX] = ndgrid(lj, k0*s*r(:).');
                 J2 = besselj(LL, XX).^2;
 
-                % Three moments of J_l^2 over the strip
-                I0 = J2*wq;                 % integral of J^2
-                I1 = J2*(wq ./ r);          % integral of J^2 / r
-                I2 = J2*(wq ./ r.^2);       % integral of J^2 / r^2
+                I0 = J2*wq;                 
+                I1 = J2*(wq ./ r);          
+                I2 = J2*(wq ./ r.^2);       
 
-                [~, loc] = ismember(la(idx), lj);
+                [~, loc] = ismember(l_abs(idx), lj);
                 lv = l(idx);
 
-                % Assemble D_l for every angle that shares this sin(theta)
+
                 for c = find(ic == j)
                     cth = cos(theta(c));
                     D(idx, c) = ( cos(alpha)^2 * lv.^2 .* I2(loc) / k0^2 ...
